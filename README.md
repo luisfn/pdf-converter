@@ -33,28 +33,24 @@ A simple command-line tool to convert HTML files to PDF while preserving formatt
    pip install -r requirements.txt
    ```
 
-### Docker Alternative
+### Docker (Recommended for macOS issues)
 
-If you encounter dependency issues on macOS, you can create a Docker version:
+If you encounter dependency issues on macOS (like `OSError: cannot load library 'libgobject-2.0-0'`), use Docker to run the converter in a consistent environment.
 
-```dockerfile
-FROM python:3.11-slim
-
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libcairo2-dev \
-    libpango-1.0-dev \
-    libgdk-pixbuf2.0-dev \
-    libgirepository1.0-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY html2pdf.py .
-
-ENTRYPOINT ["python", "html2pdf.py"]
+#### 1. Build the Docker Image
+Run this once to create the converter image:
+```bash
+docker build -t html2pdf .
 ```
+
+#### 2. Run the Converter
+Use this command to convert your files. It mounts your current folder so the container can access your HTML files:
+```bash
+# Example: Convert resume_english.html
+docker run --rm -v "$(pwd):/app" html2pdf resume_english.html
+```
+
+The PDF will be generated in your current directory.
 
 ## Usage
 
